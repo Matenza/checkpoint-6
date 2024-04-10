@@ -1,0 +1,128 @@
+CREATE DATABASE CPol;
+USE CPol;
+
+CREATE TABLE clients (
+    clients_id INT NOT NULL,
+    nom VARCHAR(255) NOT NULL,
+    Tel int NOT NULL,
+    PRIMARY KEY (clients_id)
+);
+
+CREATE TABLE produits (
+    produits_id INT NOT NULL,
+    nom VARCHAR(255) NOT NULL,
+    categorie VARCHAR(255) NOT NULL,
+    prix DECIMAL(10, 2) CHECK(prix > 0),
+    PRIMARY KEY (produits_id)
+);
+
+CREATE TABLE Commandes (
+    commandes_id INT NOT NULL,
+    clients_id INT NOT NULL,
+    produits_id INT NOT NULL,
+    order_date DATE NOT NULL,
+    quantite INT NOT NULL,
+    montant_total DECIMAL(10, 2) NOT NULL,
+    PRIMARY KEY (commandes_id),
+    CONSTRAINT fk_clients_id FOREIGN KEY (clients_id) REFERENCES clients(clients_id),
+    CONSTRAINT fk_produits_id FOREIGN KEY (produits_id) REFERENCES produits(produits_id)
+);
+
+INSERT INTO clients (clients_id, nom, Tel)
+VALUES
+    (1, 'Alice', 339870765),
+    (2, 'Bob', 778954342),
+    (3, 'Alice', 765432234);
+
+INSERT INTO produits (produits_id, nom, categorie, prix)
+VALUES
+    (1, 'Widget', 'Electronique', 10.00),
+    (2, 'Gadget', 'Menage', 20.00),
+    (3, 'Doohickey', 'Golfing', 15.00);
+
+INSERT INTO Commandes (commandes_id, clients_id, produits_id, order_date, quantite, montant_total)
+VALUES
+    (1, 1, 1, '2021-01-01', 10, 100.00),
+    (2, 1, 2, '2021-01-02', 5, 50.00),
+    (3, 2, 1, '2021-01-03', 3, 30.00),
+    (4, 2, 2, '2021-01-04', 7, 140.00),
+    (5, 3, 1, '2021-01-05', 2, 20.00),
+    (6, 3, 3, '2021-01-06', 3, 45.00),
+    (7, 2, 3, '2021-01-07', 3, 45.00);
+    
+   
+SELECT *from clients;
+SELECT *from produits;
+SELECT *from Commandes;
+
+SELECT c.nom AS nom_client,
+       SUM(CASE WHEN p.nom = 'Widget' THEN cm.quantite * p.prix ELSE 0 END) AS cout_total_widgets,
+       SUM(CASE WHEN p.nom = 'Gadget' THEN cm.quantite * p.prix ELSE 0 END) AS cout_total_gadgets
+FROM clients c
+JOIN Commandes cm ON c.clients_id = cm.clients_id
+JOIN produits p ON cm.produits_id = p.produits_id
+WHERE p.nom IN ('Widget', 'Gadget')
+GROUP BY c.clients_id, c.nom
+HAVING COUNT(DISTINCT CASE WHEN p.nom = 'Widget' THEN cm.produits_id END) >= 1
+   AND COUNT(DISTINCT CASE WHEN p.nom = 'Gadget' THEN cm.produits_id END) >= 1;
+ 
+ 
+ SELECT c.nom AS nom_client,
+       SUM(cm.quantite * p.prix) AS cout_total_widgets
+FROM clients c
+JOIN Commandes cm ON c.clients_id = cm.clients_id
+JOIN produits p ON cm.produits_id = p.produits_id
+WHERE p.nom = 'Widget'
+GROUP BY c.clients_id, c.nom;
+
+SELECT c.nom AS nom_client,
+       SUM(cm.quantite * p.prix) AS cout_total_gadgets
+FROM clients c
+JOIN Commandes cm ON c.clients_id = cm.clients_id
+JOIN produits p ON cm.produits_id = p.produits_id
+WHERE p.nom = 'Gadget'
+GROUP BY c.clients_id, c.nom;
+
+SELECT c.nom AS nom_client,
+       SUM(cm.quantite * p.prix) AS cout_total_doohickeys
+FROM clients c
+JOIN Commandes cm ON c.clients_id = cm.clients_id
+JOIN produits p ON cm.produits_id = p.produits_id
+WHERE p.nom = 'Doohickey'
+GROUP BY c.clients_id, c.nom;
+
+SELECT c.nom AS nom_client,
+       SUM(CASE WHEN p.nom = 'Widget' THEN cm.quantite ELSE 0 END) AS total_widgets_commandes,
+       SUM(CASE WHEN p.nom = 'Gadget' THEN cm.quantite ELSE 0 END) AS total_gadgets_commandes,
+       SUM(cm.quantite * p.prix) AS cout_total_commandes
+FROM clients c
+JOIN Commandes cm ON c.clients_id = cm.clients_id
+JOIN produits p ON cm.produits_id = p.produits_id
+WHERE p.nom IN ('Widget', 'Gadget')
+GROUP BY c.clients_id, c.nom;
+
+SELECT p.nom AS nom_produit,
+       SUM(cm.quantite) AS quantite_totale_commandee
+FROM produits p
+JOIN Commandes cm ON p.produits_id = cm.produits_id
+GROUP BY p.produits_id, p.nom;
+
+SELECT c.nom AS nom_client,
+       COUNT(*) AS nombre_total_commandes
+FROM clients c
+JOIN Commandes cm ON c.clients_id = cm.clients_id
+GROUP BY c.clients_id, c.nom
+ORDER BY COUNT(*) DESC
+LIMIT 1;
+
+SELECT p.nom AS nom_produit,
+       SUM(cm.quantite) AS quantite_totale_commandee
+FROM produits p
+JOIN Commandes cm ON p.produits_id = cm.produits_id
+GROUP BY p.produits_id, p.nom
+ORDER BY SUM(cm.quantite) DESC;
+
+
+
+
+
