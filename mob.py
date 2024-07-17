@@ -1,7 +1,6 @@
 import pandas as pd
 import streamlit as st
 import numpy as np
-import seaborn as sns
 import plotly.express as px
 from sklearn.metrics import silhouette_score
 from sklearn.metrics import calinski_harabasz_score
