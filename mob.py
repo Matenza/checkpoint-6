@@ -23,7 +23,10 @@ page = st.sidebar.radio('Aller à la page', pages)
 # Présentation
 if page == pages[0]:
     st.write("# Informations sur la DataFrame")
-    st.write(energi.describe())
+    st.image("bank account.jpg")
+    st.write("Dans ce point de contrôle, nous allons travailler sur l'ensemble de données « Inclusion financière en Afrique » qui a été fourni dans le cadre de l'Inclusion financière en Afrique hébergée par la plateforme Zindi .Description de l'ensemble de données : L'ensemble de données contient des informations démographiques et les services financiers utilisés par environ 33 600 personnes en Afrique de l'Est. Le rôle du modèle ML est de prédire quelles personnes sont les plus susceptibles d'avoir ou d'utiliser un compte bancaire.Le terme inclusion financière signifie que les particuliers et les entreprises ont accès à des produits et services financiers utiles et abordables qui répondent à leurs besoins – transactions, paiements, épargne, crédit et assurance – fournis de manière responsable et durable.")
+    st.dataframe(energi.head())
+    
 
 # Nettoyage des données
 elif page == pages[1]:
@@ -59,11 +62,6 @@ elif page == pages[1]:
 # Afficher la DataFrame après nettoyage
     st.write("### DataFrame après nettoyage")
     st.dataframe(energi)
-    
-# Informations sur les données
-    if st.checkbox('Afficher des informations sur les données'):
-        st.write("### Informations sur les données")
-        st.write("RangeIndex: 155000 entries, 0 to 154999")
        
 # Détection de valeurs manquantes
     if st.checkbox('Détection de valeurs manquantes'):
@@ -129,10 +127,23 @@ elif page == pages[2]:
 
     # Prédiction avec des valeurs personnalisées
     st.title("Prédiction de la susceptibilité d'avoir ou d'utiliser un compte bancaire")
+    st.write("Menu")
+       
+    st.write("location_type: ")
+    
+    st.write("cellphone_access")
+    
+    st.write("household_size")
+    
+    st.write("gender_of_respondent")
+    
+    st.write("marital_status")
+    
+    st.write("job_type")
 
     feature_values = []
     for feature in features:
-        value = st.number_input(f'enter {feature}', value=0.0)
+        value = st.number_input(f'enter {feature}', value=0)
         feature_values.append(value)
 
     if st.button("Prédire"):
@@ -140,3 +151,10 @@ elif page == pages[2]:
         input_data = scaler.transform([feature_values])
         prediction = model.predict(input_data)
         st.write(f'Prédiction : {prediction[0]}')
+
+elif page == pages[3]:
+    st.write("## Conclusion")
+    # Ajoutez du code pour l'interprétation des résultats ici
+    st.write("Selon la Banque mondiale, les trois quarts de la population pauvre du monde ne possèdent pas de compte bancaire pour des raisons ayant trait à la pauvreté, mais aussi aux frais à engager, aux distances à parcourir et à la quantité de formalités à remplir pour ouvrir un compte.Une enquête réalisée en 2011 auprès d’environ 150 000 personnes dans 148 pays révèle que 75 % des adultes gagnant moins de deux dollars par jour n’ont pas recours aux services d’institutions financières officielles. Le fait de ne pas avoir accès aux services bancaires est également lié aux inégalités de revenu : dans les pays en développement, les 20 % des adultes les plus riches ont au moins deux fois plus de chances de posséder un compte officiel que les 20 % les plus pauvres. ") 
+    st.write("Les personnes qui n’ont pas accès au système bancaire officiel doivent souvent conserver  leurs gains dans des lieux vulnérable au cambriolage car n’ayant pas assez confiance aux institution bancaires .L’accès aux services financiers — ou « inclusion financière » — peut être source de transformations, car il donne aux pauvres le moyen de bâtir un avenir plus sûr. La possibilité d’épargner et d’emprunter leur permet en effet d’accumuler des actifs, de créer des entreprises, d’investir dans l’éducation, d’établir des antécédents de crédit et, finalement, d’acheter un logement.")
+    
